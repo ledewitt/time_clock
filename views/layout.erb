@@ -1,0 +1,40 @@
+<!doctype = html>
+
+<html>
+  <head>
+    <style type="text/css" media="screen">
+    header, nav, footer, article {display:block}
+    header {text-align: center}
+    nav {float: left; 
+         width: 20% }
+    article {float: right; 
+             width: 80%}
+    footer {clear: both}
+    </style>
+  </head>
+  
+  <body>
+    
+    <header>
+      <h1><%= CONFIG[:title] %></h1>
+      <h3><i><%= CONFIG[:subtitle] %></i> </h3>
+    </header>
+
+    <nav>
+      <% CONFIG[:links].each do |name, address| %>
+        <A HREF = <%= address %> > <%= name %> </A> <br>
+      <% end %>
+    </nav>
+    
+    <%= yield %>
+  
+    <footer>
+      <p><small>
+        <%= CONFIG[:copyright] %>
+      </small><p>
+    </footer>
+  
+  </body>
+  
+  
+</html>

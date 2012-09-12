@@ -15,24 +15,7 @@
   
   <body>
     
-    <header>
-      <h1><%= CONFIG[:title] %></h1>
-      <h3><i><%= CONFIG[:subtitle] %></i> </h3>
-    </header>
-
-    <nav>
-      <% CONFIG[:links].each do |name, address| %>
-        <A HREF = <%= address %> > <%= name %> </A> <br>
-      <% end %>
-    </nav>
-    
     <%= yield %>
-  
-    <footer>
-      <p><small>
-        <%= CONFIG[:copyright] %>
-      </small><p>
-    </footer>
   
   </body>
   

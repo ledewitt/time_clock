@@ -1,7 +1,4 @@
 ---
-1:
-  :email: luke@dewittsoft.com
-2:
-  :email: james@graysoftinc.com
-3:
-  :email: test@test.com
+luke@dewittsoft.com: []
+james@graysoftinc.com: []
+bob@bob.com: []

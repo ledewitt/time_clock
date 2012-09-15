@@ -2,20 +2,16 @@
   Hello <%= user %>. <br>
   Current Time is: <%= time_now %>. <br>
   
-  Let's get some work done. <br>
+  Enter the projects name. <br>
   
   <form action="/" method="post">
-    <div><label for="current_time">Start Time:</label><br />
-    <input type="time" 
-           name="current_time" 
-           id="current_time" 
-           value = "<%= time_now %>"
-           size = 45 /></div>
+    <div><label for="project">Project:</label><br />
+    <input type="text" 
+           name="project" 
+           id="project"
+           size = 40 /></div>
 
-    <div><input type="submit" value="start_time" /></div>
+    <div><input type="submit" value="project" /></div>
   </form>
-  
-  <button ONCLICK='http://www.google.com'>
-    Go to Google
-  </button>
+
 </article>

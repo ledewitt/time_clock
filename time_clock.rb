@@ -23,6 +23,15 @@ get('/') {
   end
 }
 
+post('/') {
+  users.transaction do
+    users[session[:email]] << params[:project].to_s
+  end
+  
+  p "My project is: #{params[:project]}. 
+     My start time is: #{Time.now}"
+}
+
 get('/join') {
   erb :join
 }
@@ -30,13 +39,13 @@ get('/join') {
 post('/join') {
   # Be a good check to see if the address looks like email.
   
-  session[:email] = params[:email]
+  # session[:email] = params[:email]
   
   users.transaction do
-    users["#{sessions[:email]}"] = [ ]
+    users["#{session[:email]}"] = [ ]
   end
   
-  redirect "/?email=#{sessions[:email]}"
+  redirect "/?email=#{session[:email]}"
 }
 
 get('/login') {
@@ -51,8 +60,8 @@ post('/login') {
   session[:email] = params[:email]
   
   users.transaction(true) do
-    if users.roots.include? (params[:email].to_s)
-      redirect "/?email=#{params[:email]}"
+    if users.roots.include? (session[:email].to_s)
+      redirect "/?email=#{session[:email]}"
     else
       redirect "/login"
     end

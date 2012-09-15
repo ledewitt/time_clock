@@ -5,7 +5,7 @@ require "sinatra/reloader" if development?
 
 enable :sessions
 
-users = YAML::Store.new("yaml/db.yml")
+users = YAML::Store.new("db/user.yml")
 
 # users.transaction do
 #   users["luke@dewittsoft.com"] = [ ]
@@ -28,9 +28,9 @@ get('/join') {
 }
 
 post('/join') {
-  # Append the user to the database
+  # Be a good check to see if the address looks like email.
   
-  # Add to the session
+  session[:email] = params[:email]
   
   users.transaction do
     users["#{params[:email]}"] = [ ]
@@ -48,9 +48,13 @@ post('/login') {
   # If so redirect to the home page with the email added
   # to the end of the address.
   
-  # Add to sessions
+  session[:email] = params[:email]
   
   users.transaction(true) do
-    
+    if users.roots.include? (params[:email].to_s)
+      redirect "/?email=#{params[:email]}"
+    else
+      redirect "/login"
+    end
   end
 }

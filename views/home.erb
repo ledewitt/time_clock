@@ -1,4 +1,21 @@
-<h2>
-  The current time is <%= time_now %>. <br>
-  You're user name is <%= email %>.
-</h2>
+<article>
+  Hello <%= user %>. <br>
+  Current Time is: <%= time_now %>. <br>
+  
+  Let's get some work done. <br>
+  
+  <form action="/" method="post">
+    <div><label for="current_time">Start Time:</label><br />
+    <input type="time" 
+           name="current_time" 
+           id="current_time" 
+           value = "<%= time_now %>"
+           size = 45 /></div>
+
+    <div><input type="submit" value="start_time" /></div>
+  </form>
+  
+  <button ONCLICK='http://www.google.com'>
+    Go to Google
+  </button>
+</article>

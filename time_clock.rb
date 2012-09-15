@@ -16,8 +16,8 @@ get('/') {
   time_now = Time.now
   
   if params[:email]
-    erb :home, locals: { time_now: time_now,
-                         email:     (params[:email]) }
+    erb :home, locals: { user:     (params[:email]),
+                         time_now: time_now }
   else
     redirect '/login'
   end
@@ -33,10 +33,10 @@ post('/join') {
   session[:email] = params[:email]
   
   users.transaction do
-    users["#{params[:email]}"] = [ ]
+    users["#{sessions[:email]}"] = [ ]
   end
   
-  redirect "/?email=#{params[:email]}"
+  redirect "/?email=#{sessions[:email]}"
 }
 
 get('/login') {

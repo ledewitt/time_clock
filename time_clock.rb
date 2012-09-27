@@ -6,6 +6,7 @@ require "sinatra/reloader" if development?
 enable :sessions
 
 users = YAML::Store.new("db/user.yml")
+db = { }
 
 # users.transaction do
 #   users["luke@dewittsoft.com"] = [ ]
@@ -13,23 +14,34 @@ users = YAML::Store.new("db/user.yml")
 # end
 
 get('/') {
-  time_now = Time.now
-  
   if params[:email]
     erb :home, locals: { user:     (params[:email]),
-                         time_now: time_now }
+                         time_now: Time.now }
   else
     redirect '/login'
   end
 }
 
 post('/') {
-  users.transaction do
-    users[session[:email]] << params[:project].to_s
-  end
-  
-  p "My project is: #{params[:project]}. 
-     My start time is: #{Time.now}"
+  (db[session[:email]][params[:project]] ||= [ ]) << [Time.now]
+
+  # Thoughts:  I want the "clock in" and "clock out" done from this post
+  # action.
+  # On the home page the project text field and start button are
+  # displayed if I have yet to "clock in", once "clocked in" display
+  # a finsh button only which when pressed will log the check out.
+
+  # CODE for the YAML interface might come in handy after objects are done.  
+  # users.transaction do
+  #   users[session[:email]] << params[:project].to_s << Time.now
+  # end
+  # 
+  # users.transaction(true) do
+  #   if users[session[:email]]
+  #     p "My project is: #{users[session[:email]]}. 
+  #        My start time is: #{Time.now}"
+  #   end
+  # end
 }
 
 get('/join') {
@@ -49,6 +61,11 @@ post('/join') {
 }
 
 get('/login') {
+  db[session[:email]] = { }
+  
+  # Delete data flow checking.
+  p db
+  
   erb :login
 }
 

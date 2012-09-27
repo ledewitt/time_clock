@@ -1,6 +1,9 @@
 <article>
   Hello <%= user %>. <br>
   Current Time is: <%= time_now %>. <br>
+  Value of clocked in is: <%= clocked_in %> <br>
+  
+  <% if !clocked_in %>
   
   Enter the projects name. <br>
   
@@ -13,5 +16,17 @@
 
     <div><input type="submit" value="Start" /></div>
   </form>
+  
+  <% else %>
+
+  You are clocked in.
+  
+  <form action="/" method="post">
+    <input type="submit" value="Finish" />
+  </form>
+  
+  <% end %>
+  
+  
 
 </article>

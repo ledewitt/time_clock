@@ -15,15 +15,26 @@ db = { }
 
 get('/') {
   if params[:email]
-    erb :home, locals: { user:     (params[:email]),
-                         time_now: Time.now }
+    session[:clocked_in] = 
+         db[session[:email]].values.any? { |pair| pair.size == 1 }
+    
+    erb :home, locals: { user:       (params[:email]),
+                         clocked_in: session[:clocked_in],
+                         time_now:   Time.now }
   else
     redirect '/login'
   end
 }
 
 post('/') {
-  (db[session[:email]][params[:project]] ||= [ ]) << [Time.now]
+  
+  if !session[:clocked_in]
+    (db[session[:email]][params[:project]] ||= [ ]) << [Time.now]
+  else
+     db[session[:email]].values.find { |pair| pair.size == 1 } << Time.now
+  end
+  
+  redirect "/?email=#{session[:email]}"
 
   # Thoughts:  I want the "clock in" and "clock out" done from this post
   # action.
@@ -62,9 +73,6 @@ post('/join') {
 
 get('/login') {
   db[session[:email]] = { }
-  
-  # Delete data flow checking.
-  p db
   
   erb :login
 }

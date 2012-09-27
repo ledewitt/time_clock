@@ -1,40 +1,43 @@
-require "yaml"
 require "yaml/store"
 require "sinatra"
 require "sinatra/reloader" if development?
 
 enable :sessions
 
-users = YAML::Store.new("db/user.yml")
-db = { }
+helpers do
+  def db
+    @db ||= YAML::Store.new("db/time_clock.yml")
+  end
 
-# users.transaction do
-#   users["luke@dewittsoft.com"] = [ ]
-#   users["james@graysoftinc.com"] = [ ]
-# end
+  def clocked_in?
+    db.transaction(true) do
+      db[session[:email]].values.flatten(1).any? { |pair| pair.size == 1 }
+    end
+  end
+end
 
 get('/') {
-  if params[:email]
-    session[:clocked_in] = 
-         db[session[:email]].values.any? { |pair| pair.size == 1 }
-    
-    erb :home, locals: { user:       (params[:email]),
-                         clocked_in: session[:clocked_in],
-                         time_now:   Time.now }
+  if session[:email]
+    erb :home
   else
     redirect '/login'
   end
 }
 
 post('/') {
-  
-  if !session[:clocked_in]
-    (db[session[:email]][params[:project]] ||= [ ]) << [Time.now]
+  if clocked_in?
+    db.transaction do
+      db[session[:email]].values
+                         .flatten(1)
+                         .find { |pair| pair.size == 1 } << Time.now
+    end
   else
-     db[session[:email]].values.find { |pair| pair.size == 1 } << Time.now
+    db.transaction do
+      (db[session[:email]][params[:project]] ||= [ ]) << [Time.now]
+    end
   end
-  
-  redirect "/?email=#{session[:email]}"
+
+  redirect "/"
 
   # Thoughts:  I want the "clock in" and "clock out" done from this post
   # action.
@@ -42,14 +45,14 @@ post('/') {
   # displayed if I have yet to "clock in", once "clocked in" display
   # a finsh button only which when pressed will log the check out.
 
-  # CODE for the YAML interface might come in handy after objects are done.  
+  # CODE for the YAML interface might come in handy after objects are done.
   # users.transaction do
   #   users[session[:email]] << params[:project].to_s << Time.now
   # end
-  # 
+  #
   # users.transaction(true) do
   #   if users[session[:email]]
-  #     p "My project is: #{users[session[:email]]}. 
+  #     p "My project is: #{users[session[:email]]}.
   #        My start time is: #{Time.now}"
   #   end
   # end
@@ -61,19 +64,15 @@ get('/join') {
 
 post('/join') {
   # Be a good check to see if the address looks like email.
-  
-  # session[:email] = params[:email]
-  
-  users.transaction do
-    users["#{session[:email]}"] = [ ]
+  db.transaction do
+    db[params[:email]] = { }
   end
-  
-  redirect "/?email=#{session[:email]}"
+  session[:email] = params[:email]
+
+  redirect "/"
 }
 
 get('/login') {
-  db[session[:email]] = { }
-  
   erb :login
 }
 
@@ -81,14 +80,8 @@ post('/login') {
   # Needs to check to see if user is in the database.
   # If so redirect to the home page with the email added
   # to the end of the address.
-  
+
   session[:email] = params[:email]
-  
-  users.transaction(true) do
-    if users.roots.include? (session[:email].to_s)
-      redirect "/?email=#{session[:email]}"
-    else
-      redirect "/login"
-    end
-  end
+
+  redirect "/"
 }

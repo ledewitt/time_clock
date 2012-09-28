@@ -1,6 +1,6 @@
 <article>
-  Hello <%= user %>. <br>
-  Current Time is: <%= time_now %>. <br>
+  Hello <%= session[:email] %>. <br>
+  Current Time is: <%= Time.now %>. <br>
   Value of clocked in is: <%= clocked_in? %> <br>
 
   <% if !clocked_in? %>
@@ -24,9 +24,20 @@
   <form action="/" method="post">
     <input type="submit" value="Finish" />
   </form>
-
+  
   <% end %>
 
-
-
+  <table>
+    <% db.transaction do %>
+      <% db[session[:email]].each do |project, timesheet| %>
+        <tr>
+          <td> <%= project %> </td>
+            <% timesheet.each do |clock_in, clock_out| %>
+              <td> <%= clock_in %> </td>
+              <td> <%= clock_out %> </td>
+            <% end %>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
 </article>

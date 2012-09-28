@@ -27,16 +27,16 @@
   
   <% end %>
 
-  <table>
+  <table border="1">
     <% db.transaction do %>
       <% db[session[:email]].each do |project, timesheet| %>
-        <tr>
-          <td> <%= project %> </td>
-            <% timesheet.each do |clock_in, clock_out| %>
-              <td> <%= clock_in %> </td>
-              <td> <%= clock_out %> </td>
-            <% end %>
-        </tr>
+        <% timesheet.each do |clock_in, clock_out| %>
+          <tr>
+            <td> <%= project %> </td>
+            <td> <%= clock_in %> </td>
+            <td> <%= clock_out %> </td>
+          </tr>
+        <% end %>
       <% end %>
     <% end %>
   </table>

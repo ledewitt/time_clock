@@ -27,6 +27,14 @@
   
   <% end %>
 
+  <h2>
+    <A HREF="/?week=1"> Week 1 </A> <br>
+    <% 5.times do |times| %>
+      <A HREF="/?week="> 
+        <%= "Week #{Time.now.strftime("%W").to_i - times}" %> 
+      </A>
+    <% end %>
+  </h2>
 
   <% db.transaction do %>
     <% db[session[:email]].each do |project, timesheet| %>

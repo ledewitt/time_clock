@@ -36,9 +36,8 @@
             <td> <%= clock_in.strftime("%b %d %I:%M %P") %> </td>
             <% if clock_out %>
               <td> <%= clock_out.strftime("%b %d %I:%M %P") %> </td>
-              <td> <%= ((clock_out - clock_in) * 24).floor %> Hours
-                   : <%= (((clock_out - clock_in) * 24)
-                        .modulo(1) * 60).round %> Minutes </td>
+              <td> <%= Time.at(clock_out-clock_in).gmtime
+                       .strftime("%R:%S" )%> </td>
             <% else %>
               <td> Clock out when finished</td>
             <% end %>

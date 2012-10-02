@@ -16,15 +16,10 @@ helpers do
   end
 end
 
-get('/') {
-  if params[:week]
-    week = params[:week].to_i
-  else
-    week = Time.now.strftime("%W").to_i
-  end
-  
+get('/') {  
   if session[:email]
-    erb :home, locals: { week: week }
+    erb :home, locals: { week: (params[:week] || Time.now
+                                                     .strftime("%W")).to_i }
   else
     redirect '/login'
   end

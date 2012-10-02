@@ -1,5 +1,5 @@
 module Time_Clock
-  class User
+  class Time_Sheet
     
   end
 end

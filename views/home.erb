@@ -43,9 +43,9 @@
               <% if clock_out %>
                 <td> <%= clock_out.strftime("%b %d %I:%M %P") %> </td>
                 <td> <%= Time.at(clock_out-clock_in).gmtime
-                         .strftime("%R:%S" )%> </td>
+                         .strftime("%R" )%> </td>
               <% else %>
-                <td> Click Finished to Clock Out </td>
+                <td> Click Finish to Clock Out </td>
               <% end %>
             </tr>
           <% end %>

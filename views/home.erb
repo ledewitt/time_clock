@@ -28,11 +28,13 @@
   <% end %>
 
   <h2>
-    <A HREF="/?week=1"> Week 1 </A> <br>
+    <A HREF="/?week=1"> Week 1 </A> ...
     <% 5.times do |times| %>
-      <A HREF="/?week=<%= Time.now.strftime("%W").to_i - 4 + times %>"> 
-        <%= "Week #{Time.now.strftime("%W").to_i - 4 + times}" %> 
-      </A>
+      <% if Time.now.strftime("%W").to_i - 4 + times > 1 %>
+        <A HREF="/?week=<%= Time.now.strftime("%W").to_i - 4 + times %>"> 
+          <%= "Week #{Time.now.strftime("%W").to_i - 4 + times}" %> 
+        </A>
+      <% end %>
     <% end %>
   </h2>
 

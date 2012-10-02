@@ -17,8 +17,14 @@ helpers do
 end
 
 get('/') {
+  if params[:week]
+    week = params[:week].to_i
+  else
+    week = Time.now.strftime("%W").to_i
+  end
+  
   if session[:email]
-    erb :home
+    erb :home, locals: { week: week }
   else
     redirect '/login'
   end

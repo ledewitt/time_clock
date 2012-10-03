@@ -16,10 +16,12 @@ helpers do
   end
 end
 
-get('/') {  
+get('/') {
+  current_week = Time.now.strftime("%W")
+    
   if session[:email]
-    erb :home, locals: { week: (params[:week] || Time.now
-                                                     .strftime("%W")).to_i }
+    erb :home, locals: {         week: (params[:week] || current_week).to_i,
+                         current_week: current_week.to_i }
   else
     redirect '/login'
   end

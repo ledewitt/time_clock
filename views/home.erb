@@ -30,12 +30,16 @@
   <h2>
     <A HREF="/?week=1"> Week 1 </A> ...
     <% 5.times do |times| %>
-      <% if Time.now.strftime("%W").to_i - 4 + times > 1 %>
-        <A HREF="/?week=<%= Time.now.strftime("%W").to_i - 4 + times %>"> 
-          <%= "Week #{Time.now.strftime("%W").to_i - 4 + times}" %> 
+      <% if week - 2 + times > 1 && week - 2 + times < current_week %>
+        <A HREF="/?week=<%= week - 2 + times %>"> 
+          <%= "Week #{week - 2 + times}" %> 
         </A>
       <% end %>
     <% end %>
+    ...
+    <A HREF="/?week=<%= Time.now.strftime("%W") %>">
+      Week <%= "#{Time.now.strftime("%W")}" %>
+    </A>
   </h2>
 
   <% db.transaction do %>

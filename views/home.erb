@@ -41,32 +41,7 @@
       Week <%= "#{current_week}" %>
     </A>
   </h3>
-
-  <% db.transaction do %>
-    <% db[session[:email]].each do |project, timesheet| %>
-      <table border="1">
-        <caption><b> Project: <%= project %> </b></caption>
-          <tr>
-            <th> Clock In </th>
-            <th> Clock Out </th>
-            <th> Duration </th>
-          </tr>
-          <% timesheet.each do |clock_in, clock_out| %> 
-            <% if clock_in.strftime("%W").to_i == week %>
-              <tr>
-                <td> <%= clock_in.strftime("%b %d %I:%M %P") %> </td>
-                <% if clock_out %>
-                  <td> <%= clock_out.strftime("%b %d %I:%M %P") %> </td>
-                  <td> <%= Time.at(clock_out-clock_in).gmtime
-                           .strftime("%R" )%> </td>
-                <% else %>
-                  <td> Click Finish to Clock Out </td>
-                <% end %>
-              </tr>
-            <% end %>
-          <% end %>
-        </table>
-    <% end %>
-  <% end %>
+  
+  <!-- Rebuild table -->
 
 </article>

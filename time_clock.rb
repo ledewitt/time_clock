@@ -7,10 +7,6 @@ require_relative "lib/time_clock/time_sheet"
 enable :sessions
 
 helpers do
-  def db
-    @db ||= YAML::Store.new("db/time_clock.yml")
-  end
-  
   def timesheet
     @timesheet ||= TimeClock::TimeSheet.new
   end
@@ -40,12 +36,8 @@ get('/join') {
 }
 
 post('/join') {
-  # Be a good check to see if the address looks like email.
-  db.transaction do
-    db[params[:email]] = { }
-  end
   session[:email] = params[:email]
-
+  timesheet.join(session[:email])
   redirect "/"
 }
 

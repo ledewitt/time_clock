@@ -1,9 +1,9 @@
 <article>
   Hello <%= session[:email] %>. <br>
   Current Time is: <%= Time.now %>. <br>
-  Value of clocked in is: <%= clocked_in? %> <br>
+  Value of clocked in is: <%= timesheet.clocked_in?(session[:email]) %> <br>
 
-  <% if !clocked_in? %>
+  <% if !timesheet.clocked_in?(session[:email]) %>
 
   Enter the projects name. <br>
 

@@ -14,12 +14,6 @@ helpers do
   def timesheet
     @timesheet ||= TimeClock::TimeSheet.new
   end
-
-  def clocked_in?
-    db.transaction(true) do
-      db[session[:email]].values.flatten(1).any? { |pair| pair.size == 1 }
-    end
-  end
 end
 
 get('/') {
@@ -33,18 +27,11 @@ get('/') {
 }
 
 post('/') {
-  if clocked_in?
-    db.transaction do
-      db[session[:email]].values
-                         .flatten(1)
-                         .find { |pair| pair.size == 1 } << Time.now
-    end
+  if timesheet.clocked_in?(session[:email])
+    timesheet.clock_out(session[:email])
   else
-    db.transaction do
-      (db[session[:email]][params[:project]] ||= [ ]) << [Time.now]
-    end
+    timesheet.clock_in(session[:email], params[:project])
   end
-
   redirect "/"
 }
 

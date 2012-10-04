@@ -27,7 +27,7 @@
   
   <% end %>
 
-  <h2>
+  <h3>
     <A HREF="/?week=1"> Week 1 </A> ...
     <% 5.times do |times| %>
       <% if week - 2 + times > 1 && week - 2 + times < current_week %>
@@ -40,7 +40,7 @@
     <A HREF="/?week=<%= current_week %>">
       Week <%= "#{current_week}" %>
     </A>
-  </h2>
+  </h3>
 
   <% db.transaction do %>
     <% db[session[:email]].each do |project, timesheet| %>

@@ -2,11 +2,17 @@ require "yaml/store"
 require "sinatra"
 require "sinatra/reloader" if development?
 
+require_relative "lib/time_clock/time_sheet"
+
 enable :sessions
 
 helpers do
   def db
     @db ||= YAML::Store.new("db/time_clock.yml")
+  end
+  
+  def timesheet
+    @timesheet ||= TimeClock::TimeSheet.new
   end
 
   def clocked_in?
@@ -17,11 +23,10 @@ helpers do
 end
 
 get('/') {
-  current_week = Time.now.strftime("%W")
-    
   if session[:email]
-    erb :home, locals: {         week: (params[:week] || current_week).to_i,
-                         current_week: current_week.to_i }
+    erb :home, locals: {         week: (params[:week] || timesheet
+                                                         .current_week).to_i,
+                         current_week: timesheet.current_week.to_i }
   else
     redirect '/login'
   end
@@ -41,24 +46,6 @@ post('/') {
   end
 
   redirect "/"
-
-  # Thoughts:  I want the "clock in" and "clock out" done from this post
-  # action.
-  # On the home page the project text field and start button are
-  # displayed if I have yet to "clock in", once "clocked in" display
-  # a finsh button only which when pressed will log the check out.
-
-  # CODE for the YAML interface might come in handy after objects are done.
-  # users.transaction do
-  #   users[session[:email]] << params[:project].to_s << Time.now
-  # end
-  #
-  # users.transaction(true) do
-  #   if users[session[:email]]
-  #     p "My project is: #{users[session[:email]]}.
-  #        My start time is: #{Time.now}"
-  #   end
-  # end
 }
 
 get('/join') {
@@ -80,10 +67,6 @@ get('/login') {
 }
 
 post('/login') {
-  # Needs to check to see if user is in the database.
-  # If so redirect to the home page with the email added
-  # to the end of the address.
-
   session[:email] = params[:email]
 
   redirect "/"

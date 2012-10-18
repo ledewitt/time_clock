@@ -2,13 +2,14 @@ require "yaml/store"
 require "sinatra"
 require "sinatra/reloader" if development?
 
+require_relative "lib/time_clock/unit_of_work"
 require_relative "lib/time_clock/time_sheet"
 
 enable :sessions
 
 helpers do
   def timesheet
-    @timesheet ||= TimeClock::TimeSheet.new
+    TimeClock::TimeSheet.new(session[:email])
   end
 end
 

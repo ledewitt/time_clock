@@ -1,4 +1,4 @@
-<% timesheet.projects(session[:email]).each do |project| %>
+<% timesheet.projects.each do |project| %>
   <table border="1">
     <caption><b> Project: <%= project %> </b></caption>
       <tr>
@@ -6,15 +6,13 @@
         <th> Clock Out </th>
         <th> Duration </th>
       </tr>
-      <% timesheet.report(session[:email],
-                          project).each do |clock_in, clock_out| %>  
-        <% if clock_in.strftime("%W").to_i == week %>
+      <% timesheet.report(project).each do |unit_of_work| %>
+        <% if unit_of_work.during? week %>
           <tr>
-            <td> <%= clock_in.strftime("%b %d %I:%M %P") %> </td>
-            <% if clock_out %>
-              <td> <%= clock_out.strftime("%b %d %I:%M %P") %> </td>
-              <td> <%= Time.at(clock_out-clock_in).gmtime
-                       .strftime("%R")%> </td>
+            <td> <%= unit_of_work.formatted_in_time %> </td>
+            <% if unit_of_work.finished? %>
+              <td> <%= unit_of_work.formatted_out_time %> </td>
+              <td> <%= unit_of_work.elapsed_time %> </td>
             <% else %>
               <td> Click Finish to Clock Out </td>
             <% end %>
@@ -22,4 +20,4 @@
         <% end %>
       <% end %>
     </table>
-<% end %> 
+<% end %>

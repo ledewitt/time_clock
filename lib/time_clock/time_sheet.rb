@@ -7,9 +7,15 @@ module TimeClock
     
     attr_reader :timesheet
     
+    def report(user, project)
+      timesheet.transaction do
+        timesheet[user][project]
+      end
+    end
+    
     def projects(user)
       timesheet.transaction do
-        timesheet[user]
+        timesheet[user].keys
       end
     end
 

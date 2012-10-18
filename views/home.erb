@@ -27,6 +27,7 @@
   
   <% end %>
 
+  <!-- Pagination could be cleaned up and put somewhere else -->
   <h3>
     <A HREF="/?week=1"> Week 1 </A> ...
     <% 5.times do |times| %>
@@ -42,6 +43,6 @@
     </A>
   </h3>
   
-  <!-- Rebuild table -->
+  <%= erb :table, locals: { week: week } %>
 
 </article>

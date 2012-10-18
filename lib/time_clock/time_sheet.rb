@@ -6,8 +6,14 @@ module TimeClock
     end
     
     attr_reader :timesheet
+    
+    def projects(user)
+      timesheet.transaction do
+        timesheet[user]
+      end
+    end
 
-    def clock_out (user)
+    def clock_out(user)
       timesheet.transaction do
         timesheet[user].values
                        .flatten(1)
@@ -15,20 +21,20 @@ module TimeClock
       end
     end
 
-    def clock_in (user, project)
+    def clock_in(user, project)
       timesheet.transaction do
         (timesheet[user][project] ||= [ ]) << [Time.now]
       end
     end
 
-    def clocked_in? (user)
+    def clocked_in?(user)
       timesheet.transaction(true) do
         timesheet[user].values
                         .flatten(1).any? { |pair| pair.size == 1 }
       end
     end
     
-    def join (user)
+    def join(user)
       # TODO: Check to see if the address looks like email.
       timesheet.transaction do
         timesheet[user] = { }

@@ -19,24 +19,22 @@ module TimeClock
       user_entries(true) { |entries| entries.keys }
     end
 
-    def clock_out(user)
-      timesheet.transaction do
-        timesheet[user].values
-                       .flatten(1)
-                       .find { |pair| pair.size == 1 } << Time.now
+    def clock_out
+      user_entries do |entries|
+        entries.values
+               .flatten(1)
+               .find { |pair| pair.size == 1 } << Time.now
       end
     end
 
-    def clock_in(user, project)
-      timesheet.transaction do
-        (timesheet[user][project] ||= [ ]) << [Time.now]
-      end
+    def clock_in(project)
+      user_entries { |entries| (entries[project] ||= [ ]) << [Time.now] }
     end
 
-    def clocked_in?(user)
-      timesheet.transaction(true) do
-        timesheet[user].values
-                        .flatten(1).any? { |pair| pair.size == 1 }
+    def clocked_in?
+      user_entries do |entries| 
+        entries.values
+               .flatten(1).any? { |pair| pair.size == 1 }
       end
     end
 

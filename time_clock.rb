@@ -24,10 +24,10 @@ get('/') {
 }
 
 post('/') {
-  if timesheet.clocked_in?(session[:email])
-    timesheet.clock_out(session[:email])
+  if timesheet.clocked_in?
+    timesheet.clock_out
   else
-    timesheet.clock_in(session[:email], params[:project])
+    timesheet.clock_in(params[:project])
   end
   redirect "/"
 }
